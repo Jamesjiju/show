@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+<style type="text/css">
+	body>div{
+		width: 700px;
+		height: 600px;
+		margin: 0 auto;
+		border: 8px solid green;
+		margin-top: 100px;
+		border-radius: 10px; 
+		background-color: rgba(0,0,0,0.3);
+	}
+	span{
+		background-color: green;
+		color: red;
+	}
+	.c1{
+		padding-left: 85px;
+		margin-left: 180px;
+		margin-top: 10px;
+	}
+	.c2{
+		margin-left: 200px;
+	}
+	#c2{
+		margin-left: 200px;
+	}
+	input[type='submit']{
+		margin-left: 20px;
+	}
+	input[type='button']{
+		margin-left: 20px;
+	}
+	#province{
+		width: 100px;
+  		height: 20px;
+	}
+	#city{
+		width: 100px;
+  		height: 20px;
+	}
+	#area{
+		width: 100px;
+  		height: 20px;
+	}
+	.img-responsive{
+		width: 20px;
+		height: 30px;
+	}
+	.input{
+		width: 100px;
+	}
+</style>
+</head>
+<body>
+<div>
+	<h1 class="c1">收益页面展示</h1><br>
+	<form id="form-look">
+		<div class="c2" id="div2">
+		网管名称：<input id="out_cus_name" class="input" type="text" name="out_cus_name">
+		对应收益：<input id="com_money" class="input" type="text" name="com_money"><br><br>
+		</div>
+		<p id="c2">
+			<input id="" type="button" value="返回上一页" onclick="location='search2.html'">
+		</p>
+	</form>
+</div>
+<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="../js/jquery-getUrlParam.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$.ajax({
+			"url" : "/pictures/showMoney",
+			"dataType" : "json",
+			"type" : "post",
+			"success" : function(json){
+				if(json.state == 200){
+					$("#out_cus_name").val(json.data.out_per_name);
+					$("#com_money").val(json.data.com_money);
+				}
+			}
+		});
+	});
+</script>
+</body>
+</html>

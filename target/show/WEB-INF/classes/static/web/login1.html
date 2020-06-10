@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+<style type="text/css">
+	body>div{
+		width: 500px;
+		height: 300px;
+		margin: 0 auto;
+		border: 8px solid green;
+		margin-top: 100px;
+		border-radius: 10px; 
+		background-color: rgba(0,0,0,0.3);
+	}
+	span{
+		background-color: green;
+		color: red;
+	}
+	.c1{
+		padding-left: 85px;
+		margin-left: 100px;
+		margin-top: 60px;
+	}
+	.c2{
+		margin-left: 150px;
+	}
+	#c2{
+		margin-left: 200px;
+	}
+	input[type='submit']{
+		margin-left: 20px;
+	}
+	input[type='button']{
+		margin-left: 20px;
+	}
+</style>
+</head>
+<body>
+<div>
+	<h1 class="c1">用户登录</h1><br>
+	<form id="form-login">
+		<div class="c2">
+		用户名： <input type="text" placeholder="请输入用户名" name="username"><br><br>
+		密码：&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" placeholder="请输入密码" name="password">
+		</div>
+		<p id="c2">
+			<input id="btn-login" type="button" value="登录">
+			<input id="btn-reg" type="button" value="去注册" onclick="location='reg1.html'">
+		</p>
+	</form>
+</div>
+<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
+<script type="text/javascript">
+	$("#btn-login").click(function(){
+		$.ajax({
+			"url" : "/users/login",
+			"data" : $("#form-login").serialize(),
+			"dataType" : "json",
+			"type" : "POST",
+			"success" : function(json){
+				if(json.state == 200){
+					alert("登录成功！");
+					location.href="/web/pictureInfo.html";
+				}else if(json.state == 201){
+					location.href="/web/search.html";
+				}else{
+					alert(json.message);
+				}
+			}
+		});
+	});
+</script>
+</body>
+</html>

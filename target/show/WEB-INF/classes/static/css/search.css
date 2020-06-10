@@ -1,0 +1,17 @@
+/*鍟嗗搧妗嗙殑鏍峰紡*/
+.goods-panel {
+	width: 100%;
+	border: 1px solid#eeeeee;
+	box-shadow: 0px 0px 0px #888888;
+	padding: 3px;
+	padding-bottom: 10px;
+	margin-bottom: 30px;
+}
+/*鍟嗗搧浠锋牸鐨勬牱寮�*/
+.goods-panel h4 {
+	color: red;
+}
+/*鍟嗗搧鍚嶇О鐨勬牱寮�*/
+.goods-panel h5 {
+	height: 60px;
+}

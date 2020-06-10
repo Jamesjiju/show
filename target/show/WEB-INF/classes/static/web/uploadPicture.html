@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+<style type="text/css">
+	body>div{
+		width: 600px;
+		height: 500px;
+		margin: 0 auto;
+		border: 8px solid green;
+		margin-top: 100px;
+		border-radius: 10px; 
+		background-color: rgba(0,0,0,0.3);
+	}
+	span{
+		background-color: green;
+		color: red;
+	}
+	.c1{
+		padding-left: 85px;
+		margin-left: 150px;
+		margin-top: 10px;
+	}
+	.c2{
+		margin-left: 200px;
+	}
+	#c2{
+		margin-left: 200px;
+	}
+	input[type='submit']{
+		margin-left: 20px;
+	}
+	input[type='button']{
+		margin-left: 20px;
+	}
+	#province{
+		width: 100px;
+  		height: 20px;
+	}
+	#city{
+		width: 100px;
+  		height: 20px;
+	}
+	#area{
+		width: 100px;
+  		height: 20px;
+	}
+	.img-responsive{
+		width: 20px;
+		height: 30px;
+	}
+</style>
+</head>
+<body>
+<div>
+	<h1 class="c1">图片上传</h1><br>
+	<form id="form-save">
+		<div class="c2">
+		选择图片：<img id="img-avatar" src="../images/index/user.jpg" class="img-responsive"/><br><br>
+		<input name="image" type="file"><br><br>
+		<input id="btn-change-avatar" type="button" value="上传图片" />
+		<input type="button" value="返回" onclick="location='pictureInfo.html'"/>
+		</div>
+	</form>
+</div>
+<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
+<!-- 下面的是核心js文件，不引入它，所要上传的文件对象就不能正确传给后台 -->
+<script src="../bootstrap3/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="../js/jquery-getUrlParam.js"></script>
+<script src="../bootstrap3/js/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		if($.cookie("avatar") != null){
+			$("#img-avatar").attr("src",$.cookie("avatar"));
+		}
+	});	
+</script>
+<script type="text/javascript">
+		$("#btn-change-avatar").click(function(){
+			var id = $.getUrlParam("title");
+			$.ajax({
+				"url":"/pictures/" + id + "/savePicture",
+				"data":new FormData($("#form-save")[0]),
+				"type":"post",
+				"contentType":false,
+				"processData":false,
+				"dataType":"json",
+				"success":function(json){
+					if(json.state==200){
+						//修改成功
+						$("#img-avatar").attr("src",json.data);
+						alert("图片上传成功！");
+						$.cookie("avatar",json.data,{expire:1});
+					}else{
+						alert(json.message);
+					}
+				},
+				"error":function() {
+					alert("图片上传失败！");
+// 					location.href = "login.html";
+				}
+			});
+		});
+</script>
+</body>
+</html>

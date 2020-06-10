@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+#d1 {
+	width: 60%;
+	height: 40%;
+	border: 2px solid red;
+	position: fixed;
+	top: 5%;
+	margin: 0px 0px 0px 300px;
+}
+
+#d2 {
+	width: 60%;
+	height: 40%;
+	border: 2px solid green;
+	position: fixed;
+	top: 150px;
+	margin: 180px 0px 0px 300px;
+}
+
+#p2 {
+	margin-left: 5px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.d3 {
+	width: 99%;
+	height: 40%;
+	margin-top: 10px;
+	margin-left: 2px;
+}
+
+.d3>p {
+	margin-top: 5px;
+	margin-left: 2px;
+}
+
+.d3>input {
+	float: left;
+	margin-left: 30px;
+}
+
+#d1>p {
+	margin-left: 5px;
+}
+
+#d {
+	width: 99%;
+	height: 70%;
+	margin-left: 5px;
+	position: relative;
+}
+#input{
+	position:absolute;
+	top: 200px;
+	left: 10px;
+}
+</style>
+</head>
+<body>
+	<div id="d1">
+	 <form id="word">
+		<p>请按照如下标签进行选择，形容词限选两个，名词限选一个，，，</p>
+			 <textarea id="t1" name="adj" rows="10" cols="100"></textarea> 
+		<input id="input" type="button" value="提交">
+	 </form> 
+	</div>
+	<div id="d2">
+		<p id="p2">你的性格标签：</p>
+		<div class="d3" id="dd">
+			<p>形容词：</p>
+		</div>
+		<div class="d3" id="p">
+			<p>名词：</p>
+		</div>
+	</div>
+	<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			showList();
+		});
+
+		function showList() {
+			$.ajax({
+				"url" : "/deses/details",
+				"dataType" : "json",
+				"type" : "GET",
+				"success" : function(json) {
+					if (json.state == 200) {
+						var list = json.data;
+						for (var i = 0; i < 12; i++) {
+						var html = '<input id="i" type="button" value="#{des}" onclick="add(this)">';
+							html = html.replace(/#{des}/g, list[i]);
+							$("#dd").append(html);
+						}
+
+						for (var i = 12; i < list.length; i++) {
+							var html = '<input id="i" type="button" value="#{des}" onclick="add(this)">';
+								html = html.replace(/#{des}/g, list[i]);
+								html = html.replace();
+								$("#p").append(html);
+							}
+						}
+					},
+					"error" : function(){
+						alert("对不起，您的登录时间已过期，请重新登录！");
+						location.href = "/web/login.html";
+					}
+				});
+		}
+		
+		function add(item){
+			var obj = item;
+			var name = $(obj).val();
+			var htmlElement = name;
+			$("#t1").append(htmlElement + " ");
+		}
+		
+		  $("#input").click(function(){
+			  $.ajax({
+				"url" : "/users/insert",
+				"type" : "POST",
+				"data" : $("#word").serialize(),
+				"dataType" : "json",
+				"success" : function(json){
+					if(json.state == 200){
+						alert("提交成功");
+						location.href = "/web/show.html";
+					}else{
+						alert(json.message);
+					}
+				}
+			});  
+		});   
+	</script>
+</body>
+</html>

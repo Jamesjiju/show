@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="show.mapper.DistrictMapper">
+	<select id="findProvince" resultType="show.entity.District">
+		SELECT
+			parent,code,
+			name,id
+		FROM
+			t_dict_district
+		WHERE
+			parent = #{parent}
+	</select>
+	
+	<!-- 根据地址code得到地址名称 -->
+	<select id="findName" resultType="java.lang.String">
+		SELECT 
+			NAME
+		FROM 
+			T_DICT_DISTRICT
+		WHERE
+			CODE = #{code}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

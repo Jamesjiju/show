@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="show.mapper.PictureMapper">
+
+	<!-- 插入图片数据 -->
+	<!-- Integer insert(User user) -->
+	<insert id="addPicture" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_goods(
+			category,title,
+			price,num,
+			image,status,
+			created_time,created_user,
+			if_out,out_time,
+			on_time,out_address,
+			out_cus_name,out_per_name
+		) VALUES(
+			#{category},#{title},
+			#{price},#{num},
+			#{image},#{status},
+			#{createdTime},#{createdUser},
+			#{if_out},#{out_time},
+			#{on_time},#{out_address},
+			#{out_cus_name},#{out_per_name}
+		)
+	</insert>
+	
+	<!-- 更新图片路径 -->
+	<update id="update">
+		UPDATE T_GOODS SET
+			IMAGE = #{image}
+		WHERE
+			ID = #{id}
+	</update>
+	
+	<!-- 更新图片对应价格 -->
+	<update id="updatePrice">
+		UPDATE T_GOODS SET
+			price = #{price}
+		WHERE
+			title = #{title}
+	</update>
+	
+	<!-- 查询图片路径并展示 -->
+	<select id="find" resultType="show.entity.Goods">
+		SELECT
+			id,
+			category,title,
+			price,num,
+			image,status,
+			created_time,created_user,
+			if_out,out_time,
+			on_time,out_address,
+			out_cus_name,out_per_name
+		FROM
+			T_GOODS
+	</select>
+	
+	<!-- 查询图片总数量 -->
+	<select id="count" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			T_GOODS
+	</select>
+	
+	<!-- 查询所有图片的价格 -->
+	<select id="allPrice" resultType="show.entity.Goods">
+		SELECT
+			price
+		FROM
+			T_GOODS
+	</select>
+	
+	<!-- 根据网吧名称查询对用的图片价格 -->
+	<select id="countAll" resultType="show.entity.Goods">
+		SELECT
+			price
+		FROM
+			T_GOODS
+		WHERE
+			out_cus_name = #{out_cus_name}
+	</select>
+	
+	<!-- 根据网管注册地址查询出所有该区域的网吧名称和对应的图片价格，便于计算总收益 -->
+	<select id="findCusName" resultType="show.entity.Goods">
+		SELECT
+			distinct(out_cus_name)
+		FROM
+			T_GOODS
+		WHERE
+			out_address = #{out_address}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

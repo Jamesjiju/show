@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+<style type="text/css">
+	body>div{
+		width: 700px;
+		height: 500px;
+		margin: 0 auto;
+		border: 8px solid green;
+		margin-top: 100px;
+		border-radius: 10px; 
+		background-color: rgba(0,0,0,0.3);
+	}
+	span{
+		background-color: green;
+		color: red;
+	}
+	.c1{
+		padding-left: 85px;
+		margin-left: 210px;
+		margin-top: 40px;
+	}
+	.c2{
+		margin-left: 200px;
+	}
+	#c2{
+		margin-left: 200px;
+	}
+	input[type='submit']{
+		margin-left: 20px;
+	}
+	input[type='button']{
+		margin-left: 20px;
+	}
+	#province{
+		width: 100px;
+  		height: 20px;
+	}
+	#city{
+		width: 100px;
+  		height: 20px;
+	}
+	#area{
+		width: 100px;
+  		height: 20px;
+	}
+</style>
+</head>
+<body>
+<div>
+	<h1 class="c1">用户注册</h1><br>
+	<form id="form-reg">
+		<div class="c2">
+		用户名： <input type="text" placeholder="请输入用户名" name="username"><br><br>
+		密码：&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" placeholder="请输入密码" name="password"><br><br>
+		性别：&nbsp;&nbsp;<input type="radio" name="nan" id="male" value="1">男
+		<input type="radio" name="nan" id="female" value="0">女<br><br>
+		省/直辖市：<select id="province" name="province"></select><br><br>
+		城市：&nbsp;&nbsp;<select id="city" name="city"></select><br><br>
+		区县：&nbsp;&nbsp;<select id="area" name="area"></select>
+		</div>
+		<p id="c2">
+			<input id="btn-reg" type="button" value="注册">
+			<input type="button" value="去登录" onclick="location='login1.html'">
+		</p>
+	</form>
+</div>
+<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
+<script type="text/javascript">
+	$("#btn-reg").click(function(){
+		$.ajax({
+			"url" : "/users/reg",
+			"data" : $("#form-reg").serialize(),
+			"type" : "POST",
+			"dataType" : "json",
+			"success" : function(json){
+				if(json.state == 200){
+					alert("注册成功！");
+				}else{
+					alert(json.message);
+				}
+			}
+		});
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		showProvinceList();
+		$("#province").change(function(){
+			$("#city").empty();
+			showCitysList();
+			$("#area").empty();
+			$("#area").append('<option value="0">---- 请选择 ----</option>');
+		})
+		$("#city").change(function(){
+			$("#area").empty();
+			showAreasList();
+		})
+		$("#city").append('<option value="0">---- 请选择 ----</option>');
+		$("#area").append('<option value="0">---- 请选择 ----</option>');
+	});
+	
+	function showProvinceList() {
+		$("#province").append('<option value="0">---- 请选择 ----</option>');
+		$.ajax({
+			"url" : "/area/findProvince",
+			"data" : "parent=86",
+			"type" : "get",
+			"dataType" : "json",
+			"success" : function(json) {
+				if (json.state == 200) {
+					var list = json.data;
+					for (var i = 0; i < list.length; i++) {
+// 						console.log(list[i].name);
+						var op = '<option value="'+list[i].code+'">'+list[i].name+'</option>';
+						$("#province").append(op);
+					}
+				} else {
+					//修改错误
+					alert(json.message);
+				}
+			},
+			"error" : function() {
+				alert("查询省名称失败！");
+				location.href = "/web/login1.html";
+			}
+		});
+	};
+	
+	function showCitysList() {
+		var provinceCode = $("#province").val();
+		$("#city").append('<option value="0">---- 请选择 ----</option>');
+		if(provinceCode == 0){
+			return;
+		}
+		$.ajax({
+			"url" : "/area/findCity",
+			"data" : "parent=" + provinceCode,
+			"type" : "get",
+			"dataType" : "json",
+			"success" : function(json) {
+				if (json.state == 200) {
+					var list = json.data;
+					for (var i = 0; i < list.length; i++) {
+// 						console.log(list[i].name);
+						var op = '<option value="' + list[i].code+'">' + list[i].name + '</option>';
+						$("#city").append(op);
+					}
+				} else {
+					//修改错误
+					alert(json.message);
+				}
+			},
+			"error" : function() {
+				alert("查询市名称失败！");
+				location.href = "/web/login1.html";
+			}
+		});
+	};
+	
+	function showAreasList() {
+		var cityCode = $("#city").val();
+		$("#area").append('<option value="0">---- 请选择 ----</option>');
+		if(cityCode==0){
+			return;
+		}
+		$.ajax({
+			"url" : "/area/findArea",
+			"data" : "parent=" + cityCode,
+			"type" : "get",
+			"dataType" : "json",
+			"success" : function(json) {
+				if (json.state == 200) {
+					var list = json.data;
+					for (var i = 0; i < list.length; i++) {
+// 						console.log(list[i].name);
+						var op = '<option value="'+list[i].code+'">'+list[i].name+'</option>';
+						$("#area").append(op);
+					}
+				} else {
+					//修改错误
+					alert(json.message);
+				}
+			},
+			"error" : function() {
+				alert("查询区名称失败！");
+				location.href = "/web/login1.html";
+			}
+		});
+	};
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+<style type="text/css">
+	body>div{
+		width: 700px;
+		height: 600px;
+		margin: 0 auto;
+		border: 8px solid green;
+		margin-top: 100px;
+		border-radius: 10px; 
+		background-color: rgba(0,0,0,0.3);
+	}
+	span{
+		background-color: green;
+		color: red;
+	}
+	.c1{
+		padding-left: 85px;
+		margin-left: 180px;
+		margin-top: 10px;
+	}
+	.c2{
+		margin-left: 200px;
+	}
+	#c2{
+		margin-left: 200px;
+	}
+	input[type='submit']{
+		margin-left: 20px;
+	}
+	input[type='button']{
+		margin-left: 20px;
+	}
+	#province{
+		width: 100px;
+  		height: 20px;
+	}
+	#city{
+		width: 100px;
+  		height: 20px;
+	}
+	#area{
+		width: 100px;
+  		height: 20px;
+	}
+	.img-responsive{
+		width: 20px;
+		height: 30px;
+	}
+	.input{
+		width: 100px;
+	}
+</style>
+</head>
+<body>
+<div>
+	<h1 class="c1">收益明细页面展示</h1><br>
+	<form id="form-look">
+		<div class="c2">
+		投放图片总数： <input id="num" type="text" name="num" value="" readonly><br><br>
+		总收益：&nbsp;&nbsp;&nbsp;&nbsp;<input id="admin_money" type="text" name="admin_money" value="" readonly><br><br>
+		选择所要查询的区域:<br>
+		省/直辖市：<select id="province" name="province"></select><br><br>
+		城市：&nbsp;&nbsp;<select id="city" name="city"></select><br><br>
+		区县：&nbsp;&nbsp;<select id="area" name="area"></select><br><br>
+		</div>
+		<div class="c2" id="div2">
+		网管名称：<input id="out_per_name" class="input" type="text" name="out_per_name">
+		对应收益：<input id="com_money" class="input" type="text" name="com_money"><br><br>
+		</div>
+		<p id="c2">
+			<input id="look" type="button" value="按区域查询">
+			<input id="lookPer" type="button" value="按网管名称查询">
+			<input id="" type="button" value="返回上一页" onclick="location='pictureInfo.html'">
+		</p>
+	</form>
+</div>
+<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
+<script type="text/javascript">
+	$("#lookPer").click(function(){
+		$.ajax({
+			"url" : "/pictures/findPerName",
+			"data" : $("#form-look").serialize(),
+			"type" : "GET",
+			"dataType" : "json",
+			"success" : function(json){
+				if(json.state == 200){
+					alert("查询成功！");
+					var list = json.data;
+					console.log(list);
+					for(var i = 0;i < list.length;i++){
+						$("#num").val(list[i].num);
+						$("#admin_money").val(list[i].admin_money);
+						$("#out_per_name").val(list[i].out_per_name);
+						$("#com_money").val(list[i].com_money);
+					}
+				}
+			},
+			"error": function(){
+				alert("查询收益信息失败！");
+			}
+		});	
+	});
+	
+	$("#look").click(function(){
+		$("#div2").empty();
+		
+		$.ajax({
+			"url" : "/pictures/findCusName",
+			"data" : $("#form-look").serialize(),
+			"type" : "GET",
+			"dataType" : "json",
+			"success" : function(json){
+				if(json.state == 200){
+					alert("查询成功！");
+					var list = json.data;
+					console.log(list);
+					for(var i = 0;i < list.length;i++){
+						var html = '网管名称：<input id=#{str} class="input" type="text" name="out_per_name" readonly>'
+								 + '对应收益：<input id=#{st} class="input" type="text" name="com_money" readonly><br><br>';
+						
+						html = html.replace(/#{str}/g,"str"+ i);
+						html = html.replace(/#{st}/g,"st" + (i+1));
+						$("#num").val(list[i].num);
+						$("#admin_money").val(list[i].admin_money);
+						$("#div2").append(html);
+					}
+					for(var j = 0;j < list.length;j++){
+						$("#str"+j).val(list[j].out_per_name);
+						$("#st"+(j+1)).val(list[j].com_money);
+					}
+				}else{
+					alert(json.message);
+				}
+			},
+			"error": function(){
+				alert("查询收益信息失败！");
+			}
+		});
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		showProvinceList();
+		$("#province").change(function(){
+			$("#city").empty();
+			showCitysList();
+			$("#area").empty();
+			$("#area").append('<option value="0">---- 请选择 ----</option>');
+		})
+		$("#city").change(function(){
+			$("#area").empty();
+			showAreasList();
+		})
+		$("#city").append('<option value="0">---- 请选择 ----</option>');
+		$("#area").append('<option value="0">---- 请选择 ----</option>');
+		alert("若按区域查询请先选择所要查询的区域，若按网吧名称查询请直接录入网吧名称！");
+	});
+	
+	function showProvinceList() {
+		$("#province").append('<option value="0">---- 请选择 ----</option>');
+		$.ajax({
+			"url" : "/area/findProvince",
+			"data" : "parent=86",
+			"type" : "get",
+			"dataType" : "json",
+			"success" : function(json) {
+				if (json.state == 200) {
+					var list = json.data;
+					for (var i = 0; i < list.length; i++) {
+// 						console.log(list[i].name);
+						var op = '<option value="'+list[i].code+'">'+list[i].name+'</option>';
+						$("#province").append(op);
+					}
+				} else {
+					//修改错误
+					alert(json.message);
+				}
+			},
+			"error" : function() {
+				alert("查询省名称失败！");
+				location.href = "/web/login.html";
+			}
+		});
+	};
+	
+	function showCitysList() {
+		var provinceCode = $("#province").val();
+		$("#city").append('<option value="0">---- 请选择 ----</option>');
+		if(provinceCode == 0){
+			return;
+		}
+		$.ajax({
+			"url" : "/area/findCity",
+			"data" : "parent=" + provinceCode,
+			"type" : "get",
+			"dataType" : "json",
+			"success" : function(json) {
+				if (json.state == 200) {
+					var list = json.data;
+					for (var i = 0; i < list.length; i++) {
+// 						console.log(list[i].name);
+						var op = '<option value="' + list[i].code+'">' + list[i].name + '</option>';
+						$("#city").append(op);
+					}
+				} else {
+					//修改错误
+					alert(json.message);
+				}
+			},
+			"error" : function() {
+				alert("查询市名称失败！");
+				location.href = "/web/login.html";
+			}
+		});
+	};
+	
+	function showAreasList() {
+		var cityCode = $("#city").val();
+		$("#area").append('<option value="0">---- 请选择 ----</option>');
+		if(cityCode==0){
+			return;
+		}
+		$.ajax({
+			"url" : "/area/findArea",
+			"data" : "parent=" + cityCode,
+			"type" : "get",
+			"dataType" : "json",
+			"success" : function(json) {
+				if (json.state == 200) {
+					var list = json.data;
+					for (var i = 0; i < list.length; i++) {
+// 						console.log(list[i].name);
+						var op = '<option value="'+list[i].code+'">'+list[i].name+'</option>';
+						$("#area").append(op);
+					}
+				} else {
+					//修改错误
+					alert(json.message);
+				}
+			},
+			"error" : function() {
+				alert("查询区名称失败！");
+				location.href = "/web/login.html";
+			}
+		});
+	};
+</script>
+</body>
+</html>

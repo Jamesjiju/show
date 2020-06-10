@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	div{
+		width: 500px;
+		height: 200px;
+		border: 2px solid green;
+		margin: 60px 430px;
+	}
+	h1{
+		color: red;
+	}
+</style>
+</head>
+<body>
+<h1 align="center">个人魅力</h1>
+<div><h1 id="h"></h1></div>
+</body>
+<script type="text/javascript" src="../js/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		 $.ajax({
+			"url" : "/users/find",
+			"dataType" : "json",
+			"type" : "GET",
+			"success" : function(json){
+				if(json.state == 200){
+				$("#h").append("你就是  " + json.data.adj + "的  " + json.data.none + " " + json.data.username);
+				}
+			}
+		}); 
+	});
+</script>
+</html>

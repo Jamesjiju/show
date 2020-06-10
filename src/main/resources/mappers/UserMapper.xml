@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="show.mapper.UserMapper">
+
+	<!-- 插入用户数据 -->
+	<!-- Integer insert(User user) -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="uid">
+		INSERT INTO t_user(
+			username,password,
+			gender,salt,
+			address,admin_money,
+			com_money
+		) VALUES(
+			#{username},#{password},
+			#{gender},#{salt},
+			#{address},#{admin_money},
+			#{com_money}
+		)
+	</insert>
+	
+	<!-- 根据用户名修改数据 -->
+	<!-- Integer updateWord(String username,String adj,String none) -->
+	<update id="updateWord">
+		UPDATE 
+			user
+		SET
+			none = #{none},
+			adj = #{adj}
+		WHERE
+			username = #{username}
+	</update>
+	
+	<!-- 根据用户名查询用户数据 -->
+	<!-- User findByUsername(String username) -->
+	<select id="findByUsername" resultType="show.entity.User">
+		SELECT
+			username,password,
+			salt,uid,
+			gender,address,
+			admin_money,com_money
+		FROM 
+			t_user
+		WHERE 
+			username = #{username}
+	</select>
+	
+	<!-- 模糊查询商品表数据，用于前端页面展示 -->
+	<select id="selectAll" resultType="show.entity.Goods">
+		SELECT
+			ID,
+			CATEGORY_ID,
+			ITEM_TYPE,
+			TITLE,
+			SELL_POINT,
+			PRICE,
+			NUM,
+			BARCODE,
+			IMAGE,
+			STATUS,
+			PRIORITY,
+			CREATED_TIME,
+			MODIFIED_TIME,
+			CREATED_USER,
+			MODIFIED_USER
+		from
+			t_goods
+		where
+			status=1
+			AND
+				TITLE LIKE '%${title}%'
+			order by priority desc
+			limit 0,4
+	</select>
+	
+	<!-- 模糊查询商品表数据，为分页数据做准备 -->
+	<select id="selectCount" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM
+			T_GOODS
+		WHERE
+			STATUS = 1 
+		AND
+			TITLE LIKE '%${title}%'
+		ORDER BY PRIORITY DESC
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
